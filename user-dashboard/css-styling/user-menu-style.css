@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=REM:ital,wght@0,100..900;1,100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    font-family: 'Urbanist', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background-color: #A5D6A7;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 100px;
+    height: 100px;
+    background-image: url('../images/logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0 auto;
+}
+
+.logo-container p {
+    margin-top: 10px;
+    font-size: 18px;
+    font-family: 'REM', sans-serif;
+}
+
+.nav {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.nav a {
+    display: block;
+    background-color: #81C784;
+    color: #333;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 18px;
+    text-align: center;
+    font-family: 'REM', sans-serif;
+}
+
+.nav a.active,
+.nav a:hover {
+    background-color: #66BB6A;
+}
+
+.footer {
+    font-size: 14px;
+    text-align: center;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background-color: #FFF;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-family: 'REM', sans-serif;
+    font-size: 36px;
+    margin: 0;
+}
+
+.header .date {
+    font-size: 20px;
+    color: #555;
+    font-family: 'Urbanist', sans-serif;
+}
+
+.container {
+    background-color: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.hamburger-icon {
+    display: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #333;
+    z-index: 101;
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px; /* Same width as desktop sidebar */
+    height: 100%;
+    background-color: #A5D6A7;
+    z-index: 100;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transform: translateX(-100%); /* Start off-screen to the left */
+    transition: transform 0.3s ease-in-out;
+    display: flex; /* Always flex, visibility controlled by transform */
+    flex-direction: column;
+    padding-top: 80px; /* Space for header if it's fixed */
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.mobile-nav a {
+    padding: 15px 20px;
+    text-align: center;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #81C784;
+    font-family: 'REM', sans-serif;
+}
+
+.mobile-nav a:last-child {
+    border-bottom: none;
+}
+
+.mobile-nav .logout-button {
+    margin: 10px auto;
+    width: calc(100% - 40px); /* Adjust for padding */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    body {
+        flex-direction: column;
+        height: 100vh; /* Keep full viewport height */
+        overflow-x: hidden; /* Prevent horizontal scroll when menu is open */
+        position: relative; /* For positioning mobile-nav */
+    }
+    .main-content {
+        padding: 15px;
+        flex-grow: 1; /* Allow main content to take remaining space */
+        overflow-y: auto; /* Allow scrolling within main content */
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 0;
+        position: sticky;
+        top: 0;
+        background-color: #FFF;
+        padding: 10px 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+    .header h1 {
+        font-size: 28px;
+    }
+    .header .date {
+        font-size: 16px;
+    }
+
+    .hamburger-icon {
+        display: block;
+    }
+
+    .menu-toggle:checked + .hamburger-icon + .mobile-nav {
+        transform: translateX(0%); 
+    }
+
+    .menu-toggle:checked ~ .main-content {
+        overflow: hidden;
+    }
+
+   
+    .menu-toggle:checked ~ .main-content {
+        transform: translateX(280px); 
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .main-content {
+        transition: transform 0.3s ease-in-out;
+    }
+}
