@@ -44,9 +44,11 @@
             background-repeat: no-repeat;
         }
         #mound {
-            position: relative;
+            position: absolute;
             z-index: 1;
-            margin-bottom: 150px;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
             cursor: pointer;
             transition: all 0.5s ease;
             display: none;
@@ -55,7 +57,9 @@
 
         #tree-container {
             position: absolute;
-            bottom: 150px; 
+            bottom: 100px; 
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1;
             cursor: pointer;
             display: none; 
@@ -313,6 +317,8 @@
             .simulator-container {
                 flex-direction: column;
                 height: 100%;
+                padding-bottom: 20px; 
+                box-sizing: border-box;
             }
 
             .main-view {
@@ -329,13 +335,14 @@
                 height: 150px;
             }
             #mound {
-                margin-bottom: 115px;
-                transform: scale(0.6);
+                bottom: 70px;
+                transform: translateX(-50%) scale(0.65);
+                transform-origin: bottom center;
             }
             #tree-container {
-                bottom: 115px;
-                width: 300px;
-                height: 400px;
+                bottom: 70px;
+                transform: translateX(-50%) scale(0.65);
+                transform-origin: bottom center;
             }
             #progress-text-notification {
                 bottom: 40px !important;
@@ -440,11 +447,14 @@
 
         @media (max-width: 380px) {
             #mound {
-                margin-bottom: 95px;
-                transform: scale(0.55);
+                bottom: 60px;
+                transform: translateX(-50%) scale(0.55);
+                transform-origin: bottom center;
             }
             #tree-container {
-                bottom: 95px;
+                bottom: 60px;
+                transform: translateX(-50%) scale(0.55);
+                transform-origin: bottom center;
             }
         }
     </style>

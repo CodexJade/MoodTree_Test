@@ -412,6 +412,8 @@ function setupSimulatorPage() {
     let state = localStorage.getItem('treeState') || 'unplanted';
     let clicks = parseInt(localStorage.getItem('treeClicks')) || 0;
     const clicksNeeded = 80;
+    let notificationTimeout;
+    let growingNotificationShown = false;
 
     const dailyMood = JSON.parse(localStorage.getItem('dailyMood'));
     const todayKey = new Date().toISOString().split('T')[0];
@@ -424,16 +426,6 @@ function setupSimulatorPage() {
         fertilizeBtn.disabled = true;
         shovelBtn.disabled = true;
         
-        if(notificationOverlay) notificationOverlay.style.display = 'flex';
-        if(redirectBtn) redirectBtn.addEventListener('click', () => { window.location.href = 'log-mood.html'; });
-
-        if ((dailyMood && dailyMood.date !== todayKey) || (!dailyMood && state !== 'unplanted')) {
-             localStorage.removeItem('treeState');
-             localStorage.removeItem('treeClicks');
-             state = 'unplanted';
-             clicks = 0;
-        }
-        
         if (state === 'shoveled') {
             mound.style.display = 'none';
             treeContainer.style.display = 'none';
@@ -442,10 +434,12 @@ function setupSimulatorPage() {
                 notificationOverlay.querySelector('p').textContent = "You've already grown and saved your tree. Come back tomorrow to grow a new one!";
                 notificationOverlay.querySelector('button').textContent = "View Calendar";
                 redirectBtn.addEventListener('click', () => { window.location.href = 'user-calendar.html'; });
+                notificationOverlay.style.display = 'flex';
             }
+        } else {
+            if(notificationOverlay) notificationOverlay.style.display = 'flex';
+            if(redirectBtn) redirectBtn.addEventListener('click', () => { window.location.href = 'log-mood.html'; });
         }
-
-        updateUI(); 
         return; 
     }
     
@@ -463,7 +457,6 @@ function setupSimulatorPage() {
 
         mound.style.display = 'none';
         treeContainer.style.display = 'none';
-        if(notificationOverlay) notificationOverlay.style.display = 'none';
 
         if (state === 'unplanted') {
         } else if (state === 'planted') {
@@ -488,22 +481,46 @@ function setupSimulatorPage() {
             }
         } 
         
+        clearTimeout(notificationTimeout);
         let notificationText = '';
+        let shouldShow = true;
+
         switch(state) {
-            case 'unplanted': notificationText = "Click the 'Plant' button to begin."; break;
-            case 'planted': notificationText = "Click the 'Water' button to water your seed."; break;
-            case 'watered': notificationText = "Click 'Fertilize' to enrich the soil."; break;
+            case 'unplanted':
+                notificationText = "Click the 'Plant' button to begin.";
+                break;
+            case 'planted':
+                notificationText = "Click the 'Water' button to water your seed.";
+                break;
+            case 'watered':
+                notificationText = "Click 'Fertilize' to enrich the soil.";
+                break;
             case 'fertilized':
-            case 'growing': notificationText = "It's growing! Click the mound or tree to help it along."; break;
-            case 'mature': notificationText = "Your tree is fully grown! Click 'Shovel' to save your tree."; break;
+            case 'growing':
+                if (!growingNotificationShown) {
+                    notificationText = "It's growing! Click the mound or tree to help it along.";
+                    growingNotificationShown = true;
+                } else {
+                    shouldShow = false;
+                }
+                break;
+            case 'mature':
+                notificationText = "Your tree is fully grown! Click 'Shovel' to save your tree.";
+                break;
         }
 
-        if (notificationText) {
+        if (shouldShow && notificationText) {
             progressNotification.textContent = notificationText;
             progressNotification.style.opacity = '1';
-        } else {
-            progressNotification.style.opacity = '0';
+            if (state === 'fertilized' || state === 'growing') {
+                notificationTimeout = setTimeout(() => {
+                    progressNotification.style.opacity = '0';
+                }, 2500);
+            }
+        } else if (!shouldShow) {
+             progressNotification.style.opacity = '0';
         }
+
 
         const progress = Math.min((clicks / clicksNeeded) * 100, 100);
         progressBar.style.width = `${progress}%`;
@@ -547,6 +564,7 @@ function setupSimulatorPage() {
             localStorage.removeItem('tempMood');
             localStorage.removeItem('treeClicks');
             localStorage.setItem('treeState', 'shoveled');
+            state = 'shoveled';
 
             const randomQuote = quotes[treeType][Math.floor(Math.random() * quotes[treeType].length)];
 
@@ -586,7 +604,6 @@ function setupSimulatorPage() {
             box.querySelector('#confirm-shovel').onclick = () => {
                 document.body.removeChild(shovelOverlay);
                 window.location.href = 'user-calendar.html'; 
-                updateUI();
             };
         }
     });
